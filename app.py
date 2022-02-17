@@ -14,8 +14,8 @@ def todos_list():
             todos.create(form.data)
             #todos.save_all()
         return redirect(url_for("todos_list"))
-         
-    return render_template("todos.html", form=form, todos=todos.all(),  error=error)
+             
+    return render_template("todos.html", form=form, todos = todos.all(), error=error)
 
 @app.route("/todos/<int:todo_id>/", methods=["GET", "POST"])
 def todos_details(todo_id):
