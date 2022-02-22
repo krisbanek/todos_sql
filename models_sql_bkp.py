@@ -1,52 +1,7 @@
 
 import sqlite3
 from sqlite3 import Error
-
-def create_connection(db_file):
-    """ create a database connection to the SQLite database
-       specified by db_file
-   :param db_file: database file
-   :return: Connection object or None
-   """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    except Error as e:
-        print(e)
-    
-    return conn
-
-def execute_sql(conn, sql):
-    """ Execute sql
-    :param conn: Connection object
-    :param sql: a SQL script
-    :return:
-    """
-    try:
-        c = conn.cursor()
-        c.execute(sql)
-    except Error as e:
-        print(e)
-
-if __name__ == "__main__":
-
-    create_todos_sql = """
-    -- todos table
-    CREATE TABLE IF NOT EXISTS todos (
-        id integer PRIMARY KEY,
-        zadanie text NOT NULL,
-        opis text,
-        status text
-    );
-    """
-
-    table = "todos"
-    db_file = "todos.db"
-
-    with create_connection(db_file) as conn:
-        if conn is not None:
-            execute_sql(conn, create_todos_sql)
+from typing import List
 
 class Todos:
     def __init__(self, db_file="todos.db", table="todos"):
@@ -54,6 +9,7 @@ class Todos:
         self.db_file = db_file
         self.table = table
         try:
+            #self.todos = sqlite3.connect(db_file)
             self.todos = sqlite3.connect(db_file, check_same_thread=False)
         except Error as e:
             print(e)
@@ -130,9 +86,11 @@ class Todos:
                     'status':c3
                     }
 
+        #self.rows = cur.fetchall()
         return self.get_dict
 
     def create(self, data): #add_task
+        #data.pop('csrf_token')
         """
         Create a new task into the todos table
         :param conn:
@@ -146,6 +104,9 @@ class Todos:
         cur.execute(sql, data)
         self.todos.commit()
         return cur.lastrowid
+            
+    #def update(self, id, data): #update
+    #    data.pop('csrf_token')
 
     def update(self, id, **kwargs):
         """
@@ -172,4 +133,20 @@ class Todos:
             print(e)
 
 todos = Todos()
-#create_connection(db_file)
+#todos = todos.all()
+#data = {'zadanie':"Sniadanie", 'opis':"Kanapki", 'status':"Tak"}
+#data_list = (data["zadanie"], data["opis"], data["status"])
+#print(data_list)
+#text = 'opis="spagetti"'
+
+#print(todos.get(id = 2))
+#print(todos.create(data.values()))
+#todos.update(8, zadanie="auto", opis= "umyc", status="Tak")
+#print(todos.all())
+#print(todos.col())
+#print(todos.get_by_id(2))
+
+#a = todos.get_by_id(2)
+#print(todos.get_by_id(2).values())
+#get_dict = {'id':get_list[0], 'zadanie':get_list[1], 'opis':get_list[2], 'status':get_list[3]}
+#print(get_dict.values())

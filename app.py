@@ -11,20 +11,25 @@ def todos_list():
     error = ""
     if request.method == "POST":
         if form.validate_on_submit():
-            todos.create(form.data)
-            #todos.save_all()
+            data_dict = form.data
+            data_list = (data_dict["zadanie"], data_dict["opis"], data_dict["status"])
+            todos.create(data_list)
         return redirect(url_for("todos_list"))
              
     return render_template("todos.html", form=form, todos = todos.all(), error=error)
 
 @app.route("/todos/<int:todo_id>/", methods=["GET", "POST"])
 def todos_details(todo_id):
-    todo = todos.get(todo_id - 1)
+    todo = todos.get_by_id(todo_id)
     form = ToDoForm(data = todo)
     
     if request.method == "POST":
         if form.validate_on_submit():
-            todos.update(todo_id - 1, form.data)
+            data_dict1 = form.data
+            z = data_dict1["zadanie"]
+            o = data_dict1["opis"]
+            s = data_dict1["status"]
+            todos.update(todo_id, zadanie=z, opis=o, status=s)
         return redirect(url_for("todos_list"))   
     return render_template("todo_id.html", form=form, todo_id=todo_id)
 
